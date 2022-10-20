@@ -3,21 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 
-namespace RPNCalulator {
+namespace RPNCalculator {
 	public class RPN {
 		private Stack<int> _operators;
 		Dictionary<string, Func<int, int, int>> _operationFunction;
-        Dictionary<string, Func<int, int>> _operationFunctionSingleNumber; //  _operationFunction jako słownik dla 1
-
+        Dictionary<string, Func<int, int>> _operationFunctionSingleNumber; //  _operationFunction jako słownik dla operacji jednoelementowych
 
         public int EvalRPN(string input) {
-            _operationFunctionSingleNumber = new Dictionary<string, Func<int, int>> // dla int i znak -obiekt typu słownik
-            {
-                ["!"] = (fst) => (fst < 0 ? throw new InvalidOperationException() : Factorial(fst)),
-				["||"] = (fst) => (Math.Abs(fst)),
-				["B"] = (fst) => (binaryToDecimal(fst)),
-				["D"] = (fst) => fst,
-            };
+			_operationFunctionSingleNumber = new Dictionary<string, Func<int, int>> // słownik zawierąjcy stringa oraz Func<wejscie, wyjscie>
+			{
+				["!"] = (fst) => (fst < 0 ? throw new InvalidOperationException() : Factorial.calculateFactorial(fst)),
+				["abs"] = (fst) => (Math.Abs(fst)),
+			};
 
 
             _operationFunction = new Dictionary<string, Func<int, int, int>>
@@ -25,8 +22,10 @@ namespace RPNCalulator {
 				["+"] = (fst, snd) => (fst + snd),
 				["-"] = (fst, snd) => (fst - snd),
 				["*"] = (fst, snd) => (fst * snd),
-				["/"] = (fst, snd) => snd == 0 ? throw new DivideByZeroException() : fst / snd
+				["/"] = (fst, snd) => snd == 0 ? throw new DivideByZeroException() : fst / snd, // jezeli snd == 0 throw Exception, jezeli nie wykonaj dzielenie
             };
+
+			
 			_operators = new Stack<int>();
 
 			var splitInput = input.Split(' ');
@@ -34,21 +33,40 @@ namespace RPNCalulator {
 			{
 				if (IsNumber(op))
 					_operators.Push(Int32.Parse(op));
+
+				if (op.StartsWith("D")) // jezeli input zaczyna się na daną litere
+				{
+					int number = Convert.ToInt32(op.Substring(1, op.Length - 1)); // przekonweruj stringa na inta 
+					_operators.Push(number);
+				}
+
+				if (op.StartsWith("B"))
+				{
+					int number = Convert.ToInt32(op.Substring(1, op.Length - 1));
+					_operators.Push(Binary.binaryToDecimal(number));
+				}
+				if (op.StartsWith("#"))
+				{
+					String number = op.Substring(1, op.Length - 1);
+					_operators.Push(Hexadecimal.hexadecimalToDecimal(number));
+				}
 				else
 				if (IsOperator(op))
 				{
 					var num1 = _operators.Pop();
 					var num2 = _operators.Pop();
 					_operators.Push(_operationFunction[op](num1, num2));
-					//_operators.Push(Operation(op)(num1, num2));
 				}
+
 				else
-                if (IsOperatorForSingleNumber(op)) // Jeśli znak jest operatorem dla jednego argumentu np. silnia
-                {
-                    var num = _operators.Pop(); // Zdejmij ze stosu 
-                    _operators.Push(_operationFunctionSingleNumber[op](num)); //  na stos wynik działania w _operationFunction wg odczyt. operatora
-                }
-            }
+				if (IsOperatorForSingleNumber(op)) // Jeśli znak jest operatorem dla jednego argumentu 
+				{
+					var num = _operators.Pop(); // Zdejmij ze stosu 
+					_operators.Push(_operationFunctionSingleNumber[op](num)); //  na stos wynik działania w _operationFunction wg odczyt. operatora
+				}
+
+
+			}	
 
 			var result = _operators.Pop();
 			if (_operators.IsEmpty)
@@ -58,36 +76,7 @@ namespace RPNCalulator {
 			throw new InvalidOperationException();
 		}
 
-        private int Factorial(int f)
-        {
-            int fact = 1;
-            for (int i = 1; i <= f; i++)
-            {
-                fact = fact * i;
-            }
-            return fact;
-        }
-
-        private int binaryToDecimal(int n)
-        {
-            int num = n;
-            int dec_value = 0;
-
-            int base1 = 1;
-
-            int temp = num;
-            while (temp > 0)
-            {
-                int last_digit = temp % 10;
-                temp = temp / 10;
-
-                dec_value += last_digit * base1;
-
-                base1 = base1 * 2;
-            }
-
-            return dec_value;
-        }
+        
 
         private bool IsNumber(String input) => Int32.TryParse(input, out _);
 
@@ -95,10 +84,8 @@ namespace RPNCalulator {
 			input.Equals("+") || input.Equals("-") ||
 			input.Equals("*") || input.Equals("/");
 
-        private bool IsOperatorForSingleNumber(String input) =>
-            input.Equals("!") || input.Equals("||") || 
-			input.Equals("B") || input.Equals("D") ||
-            input.Equals("#");
+		private bool IsOperatorForSingleNumber(String input) =>
+			input.Equals("!") || input.Equals("abs");		
 
         private Func<int, int, int> Operation(String input) =>
 			(x, y) =>

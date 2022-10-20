@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
-using RPNCalulator;
+using RPNCalculator;
 
 namespace RPNTest {
 	[TestFixture]
@@ -70,7 +70,10 @@ namespace RPNTest {
 
 			Assert.That(result, Is.EqualTo(4));
 		}
-        
+
+        // Zadanie 1
+
+        // TESTY DLA DZIELENIA
         [Test]
         public void OperatorDivide_DividingTwoNumbers_ReturnCorrectResult()
         {
@@ -80,75 +83,138 @@ namespace RPNTest {
         }
 
         [Test]
-        public void SingleDigitFactorial()
+        public void OperatorDivision_DividerBiggerThanDividend_ReturnCorrectResult()
+        {
+            var result = _sut.EvalRPN("8 4 /");
+
+            Assert.That(result, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void OperatorDivide_DivideByZero_ThrowsException()
+        {
+            Assert.Throws<DivideByZeroException>(() => _sut.EvalRPN("0 2 /"));
+        }
+
+
+        // TESTY DLA SILNI
+        [Test]
+        public void OperatorFactorial_SingleDigit_ReturnCorrectResult()
         {
             var result = _sut.EvalRPN("3 !");
 
             Assert.That(result, Is.EqualTo(6));
         }
-       
+    
         [Test]
-        public void ZeroAfterFactorial()
-        {
-            var result = _sut.EvalRPN("0 !");
-
-            Assert.That(result, Is.EqualTo(1));
-        }
-        [Test]
-        public void OperatorFactorial_FacSingleDigitLessThanZero_ThrowsExcepton()
+        public void OperatorFactorial_SingleDigitLessThanZero_ThrowsException()
         {
             Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("-2 !"));
         }
 
         [Test]
-        public void SimpleAbsolute()
+        public void OperationFactorialAndOperationMultiple_ReturnCorrectResult()
         {
-            var result = _sut.EvalRPN("-5 ||");
+            var result = _sut.EvalRPN("2 2 2 * + !");
+
+            Assert.That(result, Is.EqualTo(720));
+        }
+
+        // TEST DLA WART. BEZWZGLĘDNEJ
+        [Test]
+        public void OperatorAbsoulute_SingleDigit()
+        {
+            var result = _sut.EvalRPN("-5 abs");
 
             Assert.That(result, Is.EqualTo(5));
         }
+
+        // różne testy dla obsługi wyjątków
         [Test]
-        public void DivideByZero()
+        public void EmptyInput_ThrowsExcepton()
         {
-            Assert.Throws<DivideByZeroException>(() => _sut.EvalRPN("0 2 /"));
+            Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN(""));
         }
         [Test]
-        public void TooLittleNumbers()
+        public void MissingOperator_ThrowsException() 
+        {
+            Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("1 2"));
+        }
+        [Test]
+        public void NumberAndOperatorWithoutSpace_ThrowsException()
+        {
+            Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("2 3+"));
+        }
+        [Test]
+        public void TooLittleNumbers_ThrowsException()
         {
             Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("2 +"));
         }
         [Test]
-        public void TooMuchNumbers()
+        public void TooMuchNumbers_ThrowsException()
         {
             Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("2 2 2 +"));
         }
         [Test]
-        public void InputOnlyOperator()
+        public void InputOnlyOperator_ThrowsException()
         {
             Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("+"));
         }
-		[Test]
-		public void BinaryTest()
-		{
-			var result = _sut.EvalRPN("101 B");
 
-			Assert.That(result, Is.EqualTo(5));
-		}
+        // Testy ze zmianą systemu liczbowego
         [Test]
-        public void DecimalTest()
+        public void Converter_BinaryToDecimal_ReturnCorrectResult() {
+            var result = _sut.EvalRPN("B01100");
+
+            Assert.That(result, Is.EqualTo(12));
+        }
+
+        [Test]
+        public void Converter_BinaryToDecimal_ThrowsException()
         {
-            var result = _sut.EvalRPN("10 D");
+            Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("B2"));
+        }
+
+        [Test]
+        public void Converter_HexadecimalToDecimal_ReturnCorrectResult() 
+        {
+            var result = _sut.EvalRPN("#AB");
+
+            Assert.That(result, Is.EqualTo(171));
+
+        }
+        [Test]
+        public void Converter_HexadecimalToDecimal_ThrowsException()
+        {
+            Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("#AG"));
+        }
+        [Test]
+        public void DecimalHexidecimalAddition_ReturnCorrectResult()
+        {
+            var result = _sut.EvalRPN("#BA D13 +");
+
+            Assert.That(result, Is.EqualTo(199));
+        }
+        [Test]
+        public void BinaryDecimalSubstraction_ReturnCorrectResult()
+        {
+            var result = _sut.EvalRPN("B10 D8 -");
+
+            Assert.That(result, Is.EqualTo(6));
+        }
+        [Test]
+        public void BinaryDecimalMultiplication_ReturnCorrectResult()
+        {
+            var result = _sut.EvalRPN("B101 D8 *");
+
+            Assert.That(result, Is.EqualTo(40));
+        }
+        [Test]
+        public void BinaryDecimalDivision_ReturnCorrectResult()
+        {
+            var result = _sut.EvalRPN("B101 D50 /");
 
             Assert.That(result, Is.EqualTo(10));
-        }
-        
-        
-        [Test]
-        public void DecimalAndBinaryAdditionTest()
-        {
-            var result = _sut.EvalRPN("10 B 100 D +");
-
-            Assert.That(result, Is.EqualTo(102));
-        }
+        } 
     }
 }

@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
-using RPNCalulator;
+using RPNCalculator;
 
 namespace RPNTest {
 	[TestFixture]

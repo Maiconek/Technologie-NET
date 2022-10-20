@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RPNCalulator {
+namespace RPNCalculator {
 	public class Stack<T> {
 		private T[] _storage;
 		private int _topIndex;

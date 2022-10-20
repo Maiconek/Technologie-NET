@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30523.141
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPNCalulator", "RPN\RPNCalulator.csproj", "{24CE80AC-27FA-44A0-B94C-141BDD5CDBA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPNCalculator", "RPN\RPNCalculator.csproj", "{24CE80AC-27FA-44A0-B94C-141BDD5CDBA0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPNTest", "..\RPNTest\RPNTest.csproj", "{A78D9FAF-B9BD-4C4E-9413-00D9A548CF17}"
 EndProject
