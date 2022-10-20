@@ -13,7 +13,7 @@ namespace RPNCalculator
         {
             int num = n;
             
-            int dec_value = 0;
+            int decimal_value = 0;
             int base1 = 1;
 
             int temp = num;
@@ -28,12 +28,12 @@ namespace RPNCalculator
                 
                 temp = temp / 10;
 
-                dec_value += last_digit * base1;
+                decimal_value += last_digit * base1;
 
                 base1 = base1 * 2;
             }
 
-            return dec_value;
+            return decimal_value;
         }
     }
 }

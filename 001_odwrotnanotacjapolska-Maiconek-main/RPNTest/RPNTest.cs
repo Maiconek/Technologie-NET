@@ -140,11 +140,7 @@ namespace RPNTest {
         {
             Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("1 2"));
         }
-        [Test]
-        public void NumberAndOperatorWithoutSpace_ThrowsException()
-        {
-            Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("2 3+"));
-        }
+        
         [Test]
         public void TooLittleNumbers_ThrowsException()
         {
@@ -173,6 +169,20 @@ namespace RPNTest {
         public void Converter_BinaryToDecimal_ThrowsException()
         {
             Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("B2"));
+        }
+        [Test]
+        public void Converter_Decimal_ReturnCorrectResult()
+        {
+            var result = _sut.EvalRPN("D55");
+
+            Assert.That(result, Is.EqualTo(55));
+        }
+        [Test]
+        public void Decimal_OperatorPlus_AddingTwoNumbers_ReturnCorrectResult()
+        {
+            var result = _sut.EvalRPN("D7 D3 +");
+
+            Assert.That(result, Is.EqualTo(10));
         }
 
         [Test]
@@ -215,6 +225,20 @@ namespace RPNTest {
             var result = _sut.EvalRPN("B101 D50 /");
 
             Assert.That(result, Is.EqualTo(10));
-        } 
+        }
+        [Test]
+        public void BinaryFactorial_ReturnCorrectResult()
+        {
+            var result = _sut.EvalRPN("B101 !");
+
+            Assert.That(result, Is.EqualTo(120));
+        }
+        [Test]
+        public void HexadecimalFactorial_ReturnCorrectResult()
+        {
+            var result = _sut.EvalRPN("#A !");
+
+            Assert.That(result, Is.EqualTo(3628800));
+        }
     }
 }

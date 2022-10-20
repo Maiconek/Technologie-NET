@@ -8,47 +8,42 @@ namespace RPNCalculator
 {
     public class Hexadecimal
     {
-        public static int hexadecimalToDecimal(String hexVal)
+        public static int hexadecimalToDecimal(String input)
         {
-            int len = hexVal.Length;
+            int len = input.Length;
 
-            // Initializing base1 value
-            // to 1, i.e 16^0
+           
             int base1 = 1;
 
-            int dec_val = 0;
+            int decimal_value = 0;
 
-            // Extracting characters as
-            // digits from last character
+            // przechodzenie przez stringa
             for (int i = len - 1; i >= 0; i--)
             {
-                // if character lies in '0'-'9',
-                // converting it to integral 0-9
+                // jezeli znak znajduje się miedzy '0'-'9',
+                // zmieniamy go na inta
                 // by subtracting 48 from ASCII value
-                if (hexVal[i] >= '0' && hexVal[i] <= '9')
+                if (input[i] >= '0' && input[i] <= '9')
                 {
-                    dec_val += (hexVal[i] - 48) * base1;
+                    decimal_value += (input[i] - 48) * base1;
 
-                    // incrementing base1 by power
+                    // inkrementacja base1
                     base1 = base1 * 16;
                 }
 
-                // if character lies in 'A'-'F' ,
-                // converting it to integral
-                // 10 - 15 by subtracting 55
-                // from ASCII value
-                else if (hexVal[i] >= 'A' && hexVal[i] <= 'F')
+                // jezeli znak znajduje się miedzy 'A'-'F' ,
+                // zmieniamy go na jego wartosc int zgodną z ASCII
+                else if (input[i] >= 'A' && input[i] <= 'F')
                 {
-                    dec_val += (hexVal[i] - 55) * base1;
+                    decimal_value += (input[i] - 55) * base1;
 
-                    // incrementing base1 by power
                     base1 = base1 * 16;
                 }
                 else {
                     throw new InvalidOperationException();
                 }
             }
-            return dec_val;
+            return decimal_value;
         }
     }
 }
