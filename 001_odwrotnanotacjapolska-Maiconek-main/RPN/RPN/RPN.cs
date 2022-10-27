@@ -7,7 +7,7 @@ namespace RPNCalculator {
 	public class RPN {
 		private Stack<int> _operators;
 		Dictionary<string, Func<int, int, int>> _operationFunction;
-        Dictionary<string, Func<int, int>> _operationFunctionSingleNumber; //  _operationFunction jako słownik dla operacji jednoelementowych
+        Dictionary<string, Func<int, int>> _operationFunctionSingleNumber; //  _operationFunction dla operacji jednoelementowych
 
         public int EvalRPN(string input) {
 			_operationFunctionSingleNumber = new Dictionary<string, Func<int, int>> // słownik zawierąjcy stringa oraz Func<wejscie, wyjscie>
@@ -22,7 +22,8 @@ namespace RPNCalculator {
 				["+"] = (fst, snd) => (fst + snd),
 				["-"] = (fst, snd) => (fst - snd),
 				["*"] = (fst, snd) => (fst * snd),
-				["/"] = (fst, snd) => snd == 0 ? throw new DivideByZeroException() : fst / snd, // jezeli snd == 0 throw Exception, jezeli nie wykonaj dzielenie
+				["/"] = (fst, snd) => snd == 0 ? throw new DivideByZeroException() : fst / snd, 
+				// jezeli snd == 0 throw Exception, jezeli nie wykonaj dzielenie
             };
 
 			
@@ -34,22 +35,24 @@ namespace RPNCalculator {
 				if (IsNumber(op))
 					_operators.Push(Int32.Parse(op));
 
-				if (op.StartsWith("D")) // jezeli input zaczyna się na daną litere
-				{
-					int number = Convert.ToInt32(op.Substring(1, op.Length - 1)); // przekonweruj stringa na inta 
-					_operators.Push(number);
-				}
-
+                if (op.StartsWith("D")) // jezeli input zaczyna się na daną litere
+                {
+                    int number = Convert.ToInt32(op.Substring(1, op.Length - 1)); // przekonweruj stringa na inta
+					_operators.Push(number); // pushujemy na stos wynik działania
+                }
+                
 				if (op.StartsWith("B"))
-				{
-					int number = Convert.ToInt32(op.Substring(1, op.Length - 1));
-					_operators.Push(Binary.binaryToDecimal(number));
-				}
+                {
+                    int number = Convert.ToInt32(op.Substring(1, op.Length - 1));
+                    _operators.Push(Binary.binaryToDecimal(number));
+                }
+                
 				if (op.StartsWith("#"))
-				{
-					String number = op.Substring(1, op.Length - 1);
-					_operators.Push(Hexadecimal.hexadecimalToDecimal(number));
-				}
+                {
+                    String number = op.Substring(1, op.Length - 1);
+                    _operators.Push(Hexadecimal.hexadecimalToDecimal(number));
+                }
+                
 				else
 				if (IsOperator(op))
 				{
@@ -64,6 +67,7 @@ namespace RPNCalculator {
 					var num = _operators.Pop(); // Zdejmij ze stosu 
 					_operators.Push(_operationFunctionSingleNumber[op](num)); //  na stos wynik działania w _operationFunction wg odczyt. operatora
 				}
+				
 
 
 			}	
@@ -73,7 +77,7 @@ namespace RPNCalculator {
 			{
 				return result;
 			}
-			throw new InvalidOperationException();
+			throw new InvalidOperationException(); 
 		}
 
         

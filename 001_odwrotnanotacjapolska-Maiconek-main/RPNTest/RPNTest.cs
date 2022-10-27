@@ -168,7 +168,7 @@ namespace RPNTest {
         [Test]
         public void Converter_BinaryToDecimal_ThrowsException()
         {
-            Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("B2"));
+            Assert.Throws<FormatException>(() => _sut.EvalRPN("B2"));
         }
         [Test]
         public void Converter_Decimal_ReturnCorrectResult()
@@ -180,9 +180,9 @@ namespace RPNTest {
         [Test]
         public void Decimal_OperatorPlus_AddingTwoNumbers_ReturnCorrectResult()
         {
-            var result = _sut.EvalRPN("D7 D3 +");
+            var result = _sut.EvalRPN("D7 D5 +");
 
-            Assert.That(result, Is.EqualTo(10));
+            Assert.That(result, Is.EqualTo(12));
         }
 
         [Test]
@@ -196,7 +196,7 @@ namespace RPNTest {
         [Test]
         public void Converter_HexadecimalToDecimal_ThrowsException()
         {
-            Assert.Throws<InvalidOperationException>(() => _sut.EvalRPN("#AG"));
+            Assert.Throws<FormatException>(() => _sut.EvalRPN("#AG"));
         }
         [Test]
         public void DecimalHexidecimalAddition_ReturnCorrectResult()

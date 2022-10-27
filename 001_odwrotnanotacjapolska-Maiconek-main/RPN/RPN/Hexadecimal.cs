@@ -40,7 +40,7 @@ namespace RPNCalculator
                     base1 = base1 * 16;
                 }
                 else {
-                    throw new InvalidOperationException();
+                    throw new FormatException();
                 }
             }
             return decimal_value;

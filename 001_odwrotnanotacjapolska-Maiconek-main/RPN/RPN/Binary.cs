@@ -20,13 +20,13 @@ namespace RPNCalculator
             while (temp > 0)
             {
                 
-                int last_digit = temp % 10;
+                int last_digit = temp % 10; // bierzemy ostatnią cyfre w podanej liczbie
                 
-                if (last_digit > 1 || last_digit < 0) {
-                    throw new InvalidOperationException();
+                if (last_digit > 1 || last_digit < 0) { // sprawdzamy czy spełnia założenia
+                    throw new FormatException(); // jak nie to wyjątek
                 }
                 
-                temp = temp / 10;
+                temp = temp / 10; // usuwamy ostatnią cyfre z podanej liczby
 
                 decimal_value += last_digit * base1;
 
